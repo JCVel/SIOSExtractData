@@ -20,8 +20,8 @@
 #   - tabla t_valores modificada ("t_valores_coberturasClasificadas.csv")
 #   - coberturas descendientes sin duplicados ("coberturasDescendientesUnicas.csv")
 # NOTA: (1) Este script solo ha sido testeado con la GDB de SIOSE 2014 de Madrid
-#       (2) Las tildes han sido sustituidas por mayUsculas
 ################################################################################
+
 rm(list = ls(all = TRUE)) # Eliminar objetos previos, si los hubiera
 # InstalaciOn de paquetes tomada de Antoine Soetewey (https://statsandr.com)
 packages <- c("sf", "dplyr")
