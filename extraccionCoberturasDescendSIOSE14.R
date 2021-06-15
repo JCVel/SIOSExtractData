@@ -14,21 +14,24 @@
 # En la tabla t_valores, marca los registros "descencientes" como vAlidos (V) y 
 # los "parentales" como No VAlidos (NV). De tal forma que si se suman los porcentajes
 # de ocupaciOn de los registros VAlidos de cada polIgono, suman el 100%
-
+# 
+# ** Entradas: Geodatabase de SIOSE (SIOSE_Madrid_2014.gdb)
+# ** Salidas: 
+#   - tabla t_valores modificada ("t_valores_coberturasClasificadas.csv")
+#   - coberturas descendientes sin duplicados ("coberturasDescendientesUnicas.csv")
 # NOTA: (1) Este script solo ha sido testeado con la GDB de SIOSE 2014 de Madrid
 #       (2) Las tildes han sido sustituidas por mayUsculas
 ################################################################################
-
-# InstalaciOn y carga de las librerias necesarias
-# install.packages("sf")
-# install.packages("tidyr")
-# install.packages("dplyr")
-# install.packages("stringr")
-
-library(sf)
-# library(tidyr)
-library(dplyr)
-# library(stringr)
+rm(list = ls(all = TRUE)) # Eliminar objetos previos, si los hubiera
+# InstalaciOn de paquetes tomada de Antoine Soetewey (https://statsandr.com)
+packages <- c("sf", "dplyr")
+# IntalaciOn de paquetes
+installed_packages <- packages %in% rownames(installed.packages())
+if (any(installed_packages == FALSE)) {
+  install.packages(packages[!installed_packages])
+}
+# Carga de paquetes
+invisible(lapply(packages, library, character.only = TRUE))
 
 ################################################################################
 ##################____CARPETAS DE ENTRADA Y SALIDA_____#########################
@@ -40,10 +43,8 @@ setwd("D:/Drive/JC/2_Academico/2_Masters/MTIG/TFM/0_datos_brutos_entrada/siose20
 exportPath <- "D:/Drive/JC/2_Academico/2_Masters/MTIG/TFM/1_procesado_datos/0_extraccionCoberturasDescendSIOSE14"
 # Nombre de la carpeta con las exportaciones, (dejarlo asI por defecto)
 newFolderName <- c("exportacionesCoberturasDescendSIOSE14") # Nombre de la carpeta con las exportaciones
-
 # Path completo para crear la nueva carpeta con las exportaciones
 exportPathComplete <- file.path(exportPath, newFolderName)
-
 # Crear carpeta en el exportPathComplete, donde se guardarAn las tablas
 dir.create(exportPathComplete)
 
@@ -84,7 +85,6 @@ for (row in 1:nrow(t_valores)){
                                       "parental", "descendiente")
 }
 
-
 # Ordenar el df final 
 ordenColumnas <- c("ID_POLYGON", "ID_COBERTURAS", "DESCRIPCION_COBERTURAS", 
                    "CODE_ABREVIADO", "SUPERF_POR", "INTER_ANCESTROS",
@@ -101,11 +101,9 @@ t_valores_descend <- t_valores_descend[, c("ID_COBERTURAS", "DESCRIPCION_COBERTU
 t_valores_descend_unicos <- unique(t_valores_descend)
 rm(t_valores_descend)
 
-
 ################################################################################
 ###################____EXPORTACIoN DE LAS TABLAS____############################
 ################################################################################
-
 
 # ExportaciOn de la tabla t_valores modificada
 path_t_valores_cobClasif <- file.path(exportPathComplete, "t_valores_coberturasClasificadas.csv")
